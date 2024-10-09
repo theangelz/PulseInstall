@@ -126,7 +126,7 @@ backend_node_dependencies() {
 
   sudo su - deploy <<EOF
   cd /home/deploy/${instancia_add}/backend
-  npm install
+  npm install --legacy-peer-deps
 EOF
 
   sleep 2
@@ -169,9 +169,7 @@ backend_update() {
   pm2 stop ${empresa_atualizar}-backend
   git pull
   cd /home/deploy/${empresa_atualizar}/backend
-  npm install
-  npm update -f
-  npm install @types/fs-extra
+  npm install --legacy-peer-deps
   rm -rf dist 
   npm run build
   npx sequelize db:migrate
@@ -238,7 +236,13 @@ backend_start_pm2() {
 
   sudo su - deploy <<EOF
   cd /home/deploy/${instancia_add}/backend
-  pm2 start dist/server.js --name ${instancia_add}-backend
+  NODE_ENV=production pm2 start dist/server.js --name ${instancia_add}-backend  --update-env --node-args="--max-old-space-size=4096"
+
+EOF
+
+  sudo su - root <<EOF
+   pm2 startup
+  sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u deploy --hp /home/deploy
 EOF
 
   sleep 2
