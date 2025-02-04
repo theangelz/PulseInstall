@@ -173,7 +173,7 @@ backend_update() {
   rm -rf dist 
   npm run build
   npx sequelize db:migrate
-  npx sequelize db:seed
+  npx sequelize db:seed:all
   pm2 start ${empresa_atualizar}-backend
   pm2 save 
 EOF

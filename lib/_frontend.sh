@@ -127,19 +127,10 @@ server {
   root /home/deploy/${instancia_add}/frontend/build;
   index index.html;
 
-location / {
+  location / {
       try_files $uri $uri/ /index.html;
   }
 }
-
-# Exceção para arquivos estáticos como ícones, imagens, CSS, JS
-location ~* \.(png|jpg|jpeg|gif|css|js|ico|svg|woff|woff2|ttf|eot)$ {
-    expires 30d;
-    access_log off;
-    try_files $uri =404;
-}
-
-
 END
 
 ln -s /etc/nginx/sites-available/${instancia_add}-frontend /etc/nginx/sites-enabled
